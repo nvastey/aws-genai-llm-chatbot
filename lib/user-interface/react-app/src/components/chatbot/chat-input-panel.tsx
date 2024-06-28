@@ -1,4 +1,6 @@
 import {
+  Modal,
+  Box,
   Button,
   Container,
   Icon,
@@ -8,7 +10,7 @@ import {
   Spinner,
   StatusIndicator,
 } from "@cloudscape-design/components";
-import {
+import React, {
   Dispatch,
   SetStateAction,
   useContext,
@@ -432,6 +434,8 @@ export default function ChatInputPanel(props: ChatInputPanelProps) {
     ...OptionsHelper.getSelectOptions(state.workspaces ?? []),
   ];
 
+  const [visible, setVisible] = React.useState(false);
+
   return (
     <SpaceBetween direction="vertical" size="l">
       <Container>
@@ -517,29 +521,51 @@ export default function ChatInputPanel(props: ChatInputPanelProps) {
                   }}
                 />
               ))}
-            <Button
-              disabled={
-                readyState !== ReadyState.OPEN ||
-                !state.models?.length ||
-                !state.selectedModel ||
-                props.running ||
-                state.value.trim().length === 0 ||
-                props.session.loading
-              }
-              onClick={handleSendMessage}
-              iconAlign="right"
-              iconName={!props.running ? "angle-right-double" : undefined}
-              variant="primary"
-            >
-              {props.running ? (
-                <>
-                  Loading&nbsp;&nbsp;
-                  <Spinner />
-                </>
-              ) : (
-                "Send"
-              )}
-            </Button>
+            <SpaceBetween direction="horizontal" size="xs">
+              <Button
+                  onClick={() => setVisible(true)}
+                    >Button
+              </Button>
+              <Modal
+                  onDismiss={() => setVisible(false)}
+                  visible={visible}
+                  footer={
+                    <Box float="right">
+                      <SpaceBetween direction="horizontal" size="xs">
+                        <Button variant="link">Cancel</Button>
+                        <Button variant="primary">Ok</Button>
+                      </SpaceBetween>
+                    </Box>
+                  }
+                  header="Modal title"
+              >
+                Your description should go here
+              </Modal>
+
+              <Button
+                disabled={
+                  readyState !== ReadyState.OPEN ||
+                  !state.models?.length ||
+                  !state.selectedModel ||
+                  props.running ||
+                  state.value.trim().length === 0 ||
+                  props.session.loading
+                }
+                onClick={handleSendMessage}
+                iconAlign="right"
+                iconName={!props.running ? "angle-right-double" : undefined}
+                variant="primary"
+              >
+                {props.running ? (
+                  <>
+                    Loading&nbsp;&nbsp;
+                    <Spinner />
+                  </>
+                ) : (
+                  "Send"
+                )}
+              </Button>
+            </SpaceBetween>
           </div>
         </div>
       </Container>
